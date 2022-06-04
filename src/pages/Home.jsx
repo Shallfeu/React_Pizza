@@ -10,10 +10,9 @@ import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination/Pagination';
 
 const Home = () => {
-  const categoryId = useSelector((state) => state.filterSlice.categoryId);
+  const { categoryId, sort } = useSelector((state) => state.filterSlice);
+  const { sortProperty, alpha } = sort;
   const dispatch = useDispatch();
-
-  const { sortProperty, alpha } = useSelector((state) => state.filterSlice.sort);
 
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
