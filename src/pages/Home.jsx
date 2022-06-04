@@ -1,6 +1,7 @@
 import React from 'react';
 import { SearchContext } from '../App';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
+import { setCategoryId } from '../redux/Slices/filterSlice';
 
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
@@ -9,19 +10,16 @@ import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination/Pagination';
 
 const Home = () => {
+  const categoryId = useSelector((state) => state.filterSlice.categoryId);
+  const dispatch = useDispatch();
 
-  const categoryId = useSelector(state => state.filterSlice.categoryId);
-  const dispatch = useDispatch()
-  const onClickCategory = (id) => {
+  const { sortProperty, alpha } = useSelector((state) => state.filterSlice.sort);
 
-  }
-
-  const { searchValue } = React.useContext(SearchContext);
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  // const [categoryId, setCategoryId] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const [sortType, setSortType] = React.useState({ name: 'популярности', sortType: 'rating' });
+
+  const { searchValue } = React.useContext(SearchContext);
   const search = searchValue ? `&search=${searchValue}` : '';
 
   React.useEffect(() => {
@@ -29,7 +27,7 @@ const Home = () => {
     fetch(
       `https://6293a6f47aa3e6af1a0ef002.mockapi.io/Pizzas?page=${currentPage}&limit=4&${
         categoryId > 0 ? `category=${categoryId}` : ''
-      }&sortBy=${sortType.sortType}&order=desc${search}`,
+      }&sortBy=${sortProperty.replace('-', '')}&order=${alpha}${search}`,
     )
       .then((pizzas) => pizzas.json())
       .then((arr) => {
@@ -37,7 +35,7 @@ const Home = () => {
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, search, currentPage]);
+  }, [categoryId, sortProperty, search, currentPage, alpha]);
 
   const pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
   const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
@@ -45,8 +43,8 @@ const Home = () => {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories value={categoryId} onClickCategory={onClickCategory} />
-        <Sort value={sortType} onClickSort={(id) => setSortType(id)} />
+        <Categories value={categoryId} onClickCategory={(id) => dispatch(setCategoryId(id))} />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : pizzas}</div>
