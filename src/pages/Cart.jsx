@@ -1,11 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import CartItem from '../pages/Cart';
+
+import CartItem from '../components/CartItem';
+import { clearItems } from '../redux/Slices/sliceCart';
+import { CartEmpty } from '../components/CartEmpty';
+import { selectCart } from '../redux/Slices/slicePizza';
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.sliceCart.items);
+  const { items, totalPrice } = useSelector(selectCart);
+  const totalCount = items.length ? items.reduce((acc, item) => acc + item.count, 0) : 0;
+
+  const onClickClear = () => {
+    if (window.confirm('Are you sure you want to clear')) {
+      dispatch(clearItems());
+    }
+  };
+
+  if (!totalPrice) {
+    return <CartEmpty />;
+  }
 
   return (
     <div className="container container--cart">
@@ -42,7 +57,7 @@ const Cart = () => {
             </svg>
             Корзина
           </h2>
-          <div className="cart__clear">
+          <div onClick={onClickClear} className="cart__clear">
             <svg
               width="20"
               height="20"
@@ -83,17 +98,19 @@ const Cart = () => {
           </div>
         </div>
         <div className="content__items">
-          <CartItem />
+          {items.map((item) => (
+            <CartItem key={item.id} {...item} />
+          ))}
         </div>
         <div className="cart__bottom">
           <div className="cart__bottom-details">
             <span>
               {' '}
-              Всего пицц: <b>3 шт.</b>{' '}
+              Всего пицц: <b>{totalCount} шт.</b>{' '}
             </span>
             <span>
               {' '}
-              Сумма заказа: <b>900 ₽</b>{' '}
+              Сумма заказа: <b>{totalPrice} ₽</b>{' '}
             </span>
           </div>
           <div className="cart__bottom-buttons">
