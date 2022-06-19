@@ -2,27 +2,31 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectSortBy, setSort } from '../redux/Slices/filterSlice';
 
-export const list = [
+type SortItem = { name: string; sortProperty: string; alpha: string };
+type PopupClick = MouseEvent & { path: Node[] };
+
+export const list: SortItem[] = [
   { name: 'популярности', sortProperty: 'rating', alpha: 'desc' },
   { name: 'цена по возрастанию', sortProperty: '-price', alpha: 'asc' },
   { name: 'цена по убыванию', sortProperty: 'price', alpha: 'desc' },
   { name: 'алфавиту', sortProperty: 'title', alpha: 'asc' },
 ];
 
-function Sort() {
+const Sort: React.FC = () => {
   const dispatch = useDispatch();
-  const sortRef = React.useRef();
+  const sortRef = React.useRef<HTMLDivElement>(null);
   const sort = useSelector(selectSortBy);
   const [open, setOpen] = React.useState(false);
 
-  const onClickListItem = (obj) => {
+  const onClickListItem = (obj: SortItem) => {
     dispatch(setSort(obj));
     setOpen(false);
   };
 
   React.useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.path.includes(sortRef.current)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      const _event = event as PopupClick;
+      if (sortRef.current && !_event.path.includes(sortRef.current)) {
         setOpen(false);
       }
     };
@@ -68,6 +72,6 @@ function Sort() {
       )}
     </div>
   );
-}
+};
 
 export default Sort;

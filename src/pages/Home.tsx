@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import qs from 'qs';
 
@@ -19,7 +19,7 @@ import {
   setFilters,
 } from '../redux/Slices/filterSlice';
 
-const Home = () => {
+const Home:React.FC = () => {
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
   const navigate = useNavigate();
@@ -33,12 +33,13 @@ const Home = () => {
   const category = categoryId > 0 ? `category=${categoryId}` : '';
   const sortBy = sortProperty.replace('-', '');
 
-  const onChangePage = (number) => {
-    dispatch(setCurrentPage(number));
-  };
+  const onChangePage = (number:number) => dispatch(setCurrentPage(number));
+  const onChangeCategory = (id:number) => dispatch(setCategoryId(id))
+  
 
   const getPizzas = () => {
     dispatch(
+      // @ts-ignore
       fetchPizza({
         sortBy,
         alpha,
@@ -81,20 +82,25 @@ const Home = () => {
     isMounted.current = true;
   }, [categoryId, sort.sortProperty, currentPage]);
 
-  const pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
+  const pizzas = items.map((obj:any) => (
+    <Link key={obj.id} to={`/pizza/${obj.id}`}>
+      <PizzaBlock {...obj} />
+    </Link>
+  ));
+
   const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
 
   return (
     <div className="container">
       <div className="content__top">
-        <Categories value={categoryId} onClickCategory={(id) => dispatch(setCategoryId(id))} />
+        <Categories value={categoryId} onClickCategory={onChangeCategory} />
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       {status === 'error' ? (
         <div className="content__error-info">
           <h2>
-            Произошла ошибка <icon>😕</icon>
+            Произошла ошибка <span>😕</span>
           </h2>
           <p>
             К сожалению, пиццы потерялись( <br />
@@ -104,7 +110,7 @@ const Home = () => {
       ) : (
         <div className="content__items">{status === 'loading' ? skeletons : pizzas}</div>
       )}
-      <Pagination value={currentPage} onPageChange={onChangePage} />
+      <Pagination currentPage={currentPage} onPageChange={onChangePage} />
     </div>
   );
 };
