@@ -9,7 +9,7 @@ function Header() {
 
   const { pathname } = useLocation();
 
-  const totalCount = items.reduce((acc:number, item: any) => acc + item.count, 0);
+  const totalCount = items.reduce((acc: number, item: any) => acc + item.count, 0);
   return (
     <div className="header">
       <div className="container">
@@ -22,7 +22,7 @@ function Header() {
             </div>
           </div>
         </Link>
-        <Search />
+        {pathname !== '/cart' && <Search />}
         <div className="header__cart">
           {pathname !== '/cart' && (
             <Link to="/cart" className="button button--cart">

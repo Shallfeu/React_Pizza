@@ -2,7 +2,7 @@ import React from 'react';
 
 type CategoriesProps = { value: number; onClickCategory: (index: number) => void };
 
-const Categories: React.FC<CategoriesProps> = ({ value, onClickCategory }) => {
+const Categories: React.FC<CategoriesProps> = React.memo(({ value, onClickCategory }) => {
   const categories: string[] = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
   return (
@@ -19,6 +19,6 @@ const Categories: React.FC<CategoriesProps> = ({ value, onClickCategory }) => {
       </ul>
     </div>
   );
-};
+});
 
 export default Categories;

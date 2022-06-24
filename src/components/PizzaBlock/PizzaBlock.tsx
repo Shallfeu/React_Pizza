@@ -1,32 +1,34 @@
 import React from 'react';
-import { addItem, selectCartItemById } from '../../redux/Slices/sliceCart';
+import { addItem, CartItem, selectCartItemById } from '../../redux/Slices/sliceCart';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 type PizzaBlockProps = {
-  id:string, 
-  title:string, 
-  price:number,
-  imageUrl:string,
-  sizes: number[],
-  types: number[],
-}
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+  sizes: number[];
+  types: number[];
+};
 
-const PizzaBlock: React.FC <PizzaBlockProps> = ({ id, title, price, imageUrl, sizes, types }) => {
+const PizzaBlock: React.FC<PizzaBlockProps> = ({ id, title, price, imageUrl, sizes, types }) => {
   const [activeType, setActiveType] = React.useState(0);
   const [activeSize, setActiveSize] = React.useState(0);
   const dispatch = useDispatch();
-  const cartItem = useSelector(selectCartItemById);
+  const cartItem = useSelector(selectCartItemById(id));
   const addedCount = cartItem ? cartItem.count : 0;
   const typeNames = ['тонкая', 'традиционная'];
 
   const onClickAdd = () => {
-    const item = {
+    const item: CartItem = {
       id,
       title,
       price,
       imageUrl,
       type: typeNames[activeType],
       size: sizes[activeSize],
+      count: 0,
     };
     dispatch(addItem(item));
   };
@@ -34,8 +36,10 @@ const PizzaBlock: React.FC <PizzaBlockProps> = ({ id, title, price, imageUrl, si
   return (
     <div className="pizza-block-wrapper">
       <div className="pizza-block">
-        <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
-        <h4 className="pizza-block__title">{title}</h4>
+        <Link to={`/pizza/${id}`}>
+          <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
+          <h4 className="pizza-block__title">{title}</h4>
+        </Link>
         <div className="pizza-block__selector">
           <ul>
             {types.map((type) => (
@@ -79,6 +83,6 @@ const PizzaBlock: React.FC <PizzaBlockProps> = ({ id, title, price, imageUrl, si
       </div>
     </div>
   );
-}
+};
 
 export default PizzaBlock;

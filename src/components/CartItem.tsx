@@ -7,8 +7,8 @@ type CartItemProps = {
   title: string;
   price: number;
   imageUrl: string;
-  size: string;
-  type: number;
+  type: string;
+  size: number;
   count: number;
 };
 
@@ -25,16 +25,16 @@ export const CartItem: React.FC<CartItemProps> = ({
   const dispatch = useDispatch();
 
   const onClickMinus = () => {
-    dispatch(minusItem({ id }));
+    dispatch(minusItem(id));
   };
 
   const onClickPlus = () => {
-    dispatch(addItem({ id }));
+    dispatch(addItem({ id, title, price, imageUrl, size, type, count }));
   };
 
   const onClickRemove = () => {
     if (window.confirm('Are you sure you want to remove')) {
-      dispatch(removeItem({ id }));
+      dispatch(removeItem(id));
     }
   };
 
@@ -46,11 +46,12 @@ export const CartItem: React.FC<CartItemProps> = ({
       <div className="cart__item-info">
         <h3>{title}</h3>
         <p>
-          {typeNames[type]} тесто, {size} см.
+          {typeNames[Number(type)]} тесто, {size} см.
         </p>
       </div>
       <div className="cart__item-count">
-        <div
+        <button
+          disabled={count === 1}
           onClick={onClickMinus}
           className="button button--outline button--circle cart__item-count-minus">
           <svg
@@ -68,9 +69,9 @@ export const CartItem: React.FC<CartItemProps> = ({
               fill="#EB5A1E"
             />
           </svg>
-        </div>
+        </button>
         <b> {count} </b>
-        <div
+        <button
           onClick={onClickPlus}
           className="button button--outline button--circle cart__item-count-plus">
           <svg
@@ -88,7 +89,7 @@ export const CartItem: React.FC<CartItemProps> = ({
               fill="#EB5A1E"
             />
           </svg>
-        </div>
+        </button>
       </div>
       <div className="cart__item-price">
         <b>{price * count} ₽</b>
