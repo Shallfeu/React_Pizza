@@ -3,21 +3,15 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import qs from 'qs';
 
-import Categories from '../components/Categories';
-import Sort, { list } from '../components/Sort';
-import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
-import Skeleton from '../components/PizzaBlock/Skeleton';
-import Pagination from '../components/Pagination/Pagination';
+import { Categories, Sort, PizzaBlock, Skeleton, Pagination } from '../components';
+import { list } from '../components/Sort';
 
-import { fetchPizza, SearchPizzaParams, selectCart } from '../redux/Slices/slicePizza';
-import {
-  selectSearch,
-  selectSort,
-  setCategoryId,
-  setCurrentPage,
-  setFilters,
-} from '../redux/Slices/filterSlice';
+import { fetchPizza } from '../redux/pizza/asyncActions';
+import { setCategoryId, setCurrentPage, setFilters } from '../redux/filter/slice';
 import { useAppDispatch } from '../redux/store';
+import { selectSearch, selectSort } from '../redux/filter/selectors';
+import { selectCart } from '../redux/pizza/selectors';
+import { SearchPizzaParams } from '../redux/pizza/types';
 
 const Home: React.FC = () => {
   const isSearch = React.useRef(false);
@@ -52,9 +46,7 @@ const Home: React.FC = () => {
   //Если был первый рендер, то проверяем url params и сохраняем в redux
   React.useEffect(() => {
     if (window.location.search) {
-      const params = (qs.parse(
-        window.location.search.substring(1),
-      ) as unknown) as SearchPizzaParams;
+      const params = qs.parse(window.location.search.substring(1)) as unknown as SearchPizzaParams;
       const sort = list.find((obj) => obj.sortProperty === params.sortBy);
       if (sort) {
         dispatch(

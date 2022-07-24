@@ -3,18 +3,24 @@
 .header {
   border-bottom: 1px solid $gray-line;
   padding: 40px 0;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  @media (max-width: 644px) {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
   .container {
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    @media (max-width:645px) {
+    @media (max-width: 645px) {
       flex-direction: column;
-
-      .header__cart {
-        margin-top: 30px;
-      }
 
       .header__logo {
         display: flex;
@@ -23,7 +29,7 @@
         justify-content: center;
 
         img {
-          margin: 0; 
+          margin: 0;
         }
 
         div {
@@ -35,6 +41,11 @@
 
   &__logo {
     display: flex;
+    padding-right: 15px;
+    @media (max-width: 644px) {
+      margin: 0;
+      padding: 20px 0;
+    }
 
     img {
       margin-right: 15px;
@@ -51,5 +62,12 @@
     p {
       color: #7b7b7b;
     }
+  }
+}
+
+.header__cart {
+  margin-left: 20px;
+  @media (max-width: 644px) {
+    margin: 10px 0;
   }
 }
